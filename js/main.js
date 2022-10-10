@@ -1,9 +1,6 @@
  //Se declaran variables globales
  var ingre=0;
  var egre=0;
- var etiquetas=[];
-var valores=[];
-var meses=[];
  //Se obtienen los valores en formaro JSON
  $.ajax({
      url: 'https://docs.google.com/spreadsheets/d/1ZsuvudiSyj2WM3sS5glW5ixhZJKWXxIpt_Z6OS_MQL0/gviz/tq?tqx=out:json&gid=0',
@@ -18,7 +15,7 @@ var meses=[];
      var objetoJS = JSON.parse(subdata);
      //Se declara variable para obtener todos los registros
     var categorias=[];
-    var mes=[];
+    var meses=[];
      var transaccionesRecientes="";
      var transacciones="";
      var contador=0;
@@ -32,8 +29,10 @@ var meses=[];
             egre+=mov.c[4].v;
             //Se enlistan todas las categorías catalogadas como EGRESO
             categorias.push(mov.c[3].v);
-            //Se enlistan el numero de mes de cada fecha de los egresos
-            mes.push(mov.c[1].v);
+            //Se obtiene el valor de la fecha, y se separa por "/" para poder obtener cada valor por separado
+            let mes=mov.c[1].f.split("/");
+            //Se enlista cada mes
+            meses.push(mes[1]);
          }
          if(contador<5){
             transaccionesRecientes+="<tr><td>"+mov.c[1].f+"</td><td>"+mov.c[2].v+"</td><td>"+mov.c[3].v+"</td><td>"+new Intl.NumberFormat('mx-MX', { style: 'currency', currency: 'MXN' }).format(mov.c[4].v)+"</td><td>"+mov.c[5].v+"</td><td>"+mov.c[6].v+"</td></tr>";
@@ -44,6 +43,10 @@ var meses=[];
      //Se le quitan los valores repetidos al arreglo
     categorias=new Set(categorias);
     var categorias = [...categorias];
+    meses=new Set(meses);
+  var meses = [...meses];
+
+  //Chart Categorias
 
     //Se comienza un ciclo para iterar entre todos los elementos de la lista de categorias
   for (let i = 0; i < categorias.length; i++) {
@@ -83,6 +86,114 @@ var meses=[];
  }
 
 
+ // Chart Global Color
+ Chart.defaults.color = "#6C7293";
+ Chart.defaults.borderColor = "#000000";
+ 
+
+ // Single Bar Chart Categorias
+ var ctx4 = document.getElementById("analisis-categorias").getContext("2d");
+ var myChart4 = new Chart(ctx4, {
+     type: "bar",
+     data: {
+         labels: listaCat.slice(0,5),
+         datasets: [{
+            label: "Gastos", 
+            backgroundColor: [
+                 "rgba(235, 22, 22, .7)",
+                 "rgba(235, 22, 22, .6)",
+                 "rgba(235, 22, 22, .5)",
+                 "rgba(235, 22, 22, .4)",
+                 "rgba(235, 22, 22, .3)"
+             ],
+             data: listaImpor.slice(0,5)
+         }]
+     },
+     options: {
+         responsive: true
+     }
+ });
+
+
+
+ //chart Tiempo
+
+ //Se comienza un ciclo para iterar entre todos los elementos de la lista de meses
+ for (let i = 0; i < meses.length; i++) {
+    //Se declara variable local para almacenar y sumar importe    
+    let sumaMeses=0;
+    for(let mov of objetoJS.table.rows){
+        if(mov.c[5].v=="Egreso"){
+            //Se suma el importe cada vez que se cumple una condición
+            let mes = mov.c[1].f.split("/");
+            if(mes[1]==meses[i]){
+                sumaMeses+=mov.c[4].v;
+                }
+            }
+    }
+    //Se reasigna el valor de una posición del arreglo, convirtiendo el arreglo de strings en un arreglo de objetos, agregandole el valor de la suma del importe
+    meses[i]={mes:convertirMes(meses[i]),importe:sumaMeses};  
+  }
+
+
+  //Ordenar por fecha 
+  meses.sort((a,b) => {
+    if(a.mes==b.mes){
+        return 0;
+    }
+    if(a.mes > b.mes){
+        return -1;
+    }
+    return 1;
+});
+
+//Funcion para convertir numero de mes en nombre de mes
+function convertirMes(numero){
+    //let nombreMeses = ["","Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+    let nombreMeses = ["","Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul","Ago", "Sep", "Oct", "Nov", "Dic"];
+        let nombreMes="";
+        for (let index = 1; index < nombreMeses.length; index++) {
+            if(numero==index){
+                nombreMes=nombreMeses[index];
+            }         
+        }
+        return nombreMes;
+    }
+
+
+
+  //Se declara arreglo vacio para rellenarlo en un bucle posterior
+  var listaMeses=[];
+  var listaImporMeses=[];
+  //se obtienen los primeros 5 elementos del arreglo ordenado por importe
+  for (let i = 0; i < meses.length; i++) {
+      listaMeses.push(meses[i].mes);
+      listaImporMeses.push(meses[i].importe);    
+  }
+
+
+  
+ // Single Line Chart Tiempo
+ var ctx3 = document.getElementById("analisis-tiempo").getContext("2d");
+ var myChart3 = new Chart(ctx3, {
+     type: "line",
+     data: {
+         labels: listaMeses,
+         datasets: [{
+           label: "Gastos",
+           fill: true,
+             backgroundColor: "rgba(235, 22, 22, .7)",
+             data: listaImporMeses
+         }]
+     },
+     options: {
+         responsive: true
+     }
+ });
+
+
+
+
 //Se calcula el balance
 var balan=ingre-egre;
 //Se les da a los numeros un formato de moneda
@@ -100,33 +211,7 @@ document.getElementById("movimientos-recientes").innerHTML=transaccionesReciente
 
 
 
-     // Chart Global Color
-     Chart.defaults.color = "#6C7293";
-     Chart.defaults.borderColor = "#000000";
-     
     
-     // Single Bar Chart Categorias
-     var ctx4 = document.getElementById("analisis-categorias").getContext("2d");
-     var myChart4 = new Chart(ctx4, {
-         type: "bar",
-         data: {
-             labels: listaCat.slice(0,5),
-             datasets: [{
-                label: "Gastos", 
-                backgroundColor: [
-                     "rgba(235, 22, 22, .7)",
-                     "rgba(235, 22, 22, .6)",
-                     "rgba(235, 22, 22, .5)",
-                     "rgba(235, 22, 22, .4)",
-                     "rgba(235, 22, 22, .3)"
-                 ],
-                 data: listaImpor.slice(0,5)
-             }]
-         },
-         options: {
-             responsive: true
-         }
-     });
 
 
 }
@@ -158,22 +243,22 @@ document.getElementById("movimientos-recientes").innerHTML=transaccionesReciente
 
 
   // Single Line Chart Tiempo
-  var ctx3 = document.getElementById("analisis-tiempo").getContext("2d");
-  var myChart3 = new Chart(ctx3, {
-      type: "line",
-      data: {
-          labels: ["Sep", "Oct", "Nov", "Dic", "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul","Ago"],
-          datasets: [{
-            label: "Gastos",
-            fill: true,
-              backgroundColor: "rgba(235, 22, 22, .7)",
-              data: [7, 8, 8, 9, 9, 9, 10, 11, 14, 14, 15, 16]
-          }]
-      },
-      options: {
-          responsive: true
-      }
-  });
+//   var ctx3 = document.getElementById("analisis-tiempo").getContext("2d");
+//   var myChart3 = new Chart(ctx3, {
+//       type: "line",
+//       data: {
+//           labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul","Ago", "Sep", "Oct", "Nov", "Dic"],
+//           datasets: [{
+//             label: "Gastos",
+//             fill: true,
+//               backgroundColor: "rgba(235, 22, 22, .7)",
+//               data: [7, 8, 8, 9, 9, 9, 10, 11, 14, 14, 15, 16]
+//           }]
+//       },
+//       options: {
+//           responsive: true
+//       }
+//   });
 
 
   // Single Bar Chart Categorias
