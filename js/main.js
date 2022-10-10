@@ -3,7 +3,7 @@
  var egre=0;
  var etiquetas=[];
 var valores=[];
-
+var meses=[];
  //Se obtienen los valores en formaro JSON
  $.ajax({
      url: 'https://docs.google.com/spreadsheets/d/1ZsuvudiSyj2WM3sS5glW5ixhZJKWXxIpt_Z6OS_MQL0/gviz/tq?tqx=out:json&gid=0',
@@ -18,6 +18,7 @@ var valores=[];
      var objetoJS = JSON.parse(subdata);
      //Se declara variable para obtener todos los registros
     var categorias=[];
+    var mes=[];
      var transaccionesRecientes="";
      var transacciones="";
      var contador=0;
@@ -31,6 +32,8 @@ var valores=[];
             egre+=mov.c[4].v;
             //Se enlistan todas las categorías catalogadas como EGRESO
             categorias.push(mov.c[3].v);
+            //Se enlistan el numero de mes de cada fecha de los egresos
+            mes.push(mov.c[1].v);
          }
          if(contador<5){
             transaccionesRecientes+="<tr><td>"+mov.c[1].f+"</td><td>"+mov.c[2].v+"</td><td>"+mov.c[3].v+"</td><td>"+new Intl.NumberFormat('mx-MX', { style: 'currency', currency: 'MXN' }).format(mov.c[4].v)+"</td><td>"+mov.c[5].v+"</td><td>"+mov.c[6].v+"</td></tr>";
