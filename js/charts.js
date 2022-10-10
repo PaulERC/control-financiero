@@ -14,6 +14,7 @@ function prepararDatos(data){
   //Se declara variable para obtener todos los registros
   var categorias=[];
   var meses=[];
+  var cuentas=[];
 
 
  //Recorremos el objeto para hacer modificaciones a cada iteracion
@@ -26,6 +27,8 @@ for(let mov of objetoJS.table.rows)
       let mes=mov.c[1].f.split("/");
       //Se enlista cada mes
       meses.push(mes[1]);
+      //Se enlistan las cuentas
+      cuentas.push(mov.c[6].v);
       }
   }
   //Se le quitan los valores repetidos a los arreglos
@@ -33,6 +36,8 @@ for(let mov of objetoJS.table.rows)
   var categorias = [...categorias];
   meses=new Set(meses);
   var meses = [...meses];
+  cuentas = new Set(cuentas);
+    var cuentas = [...cuentas]; 
 
   //Chart Categorias
   
@@ -173,6 +178,66 @@ function convertirMes(numero){
          responsive: true
      }
  });
+
+
+
+//Chart Cuentas
+
+    //Se comienza un ciclo para iterar entre todos los elementos de la lista de cuentas
+    for (let i = 0; i < cuentas.length; i++) {
+        //Se declara variable local para almacenar y sumar importe    
+        let suma=0;
+        for(let mov of objetoJS.table.rows){
+            if(mov.c[5].v=="Egreso"){
+                //Se suma el importe cada vez que se cumple una condición
+                if(mov.c[6].v==cuentas[i]){
+                    suma+=mov.c[4].v;
+                    }
+                }
+        }
+        //Se reasigna el valor de una posición del arreglo, convirtiendo el arreglo de strings en un arreglo de objetos, agregandole el valor de la suma del importe
+        cuentas[i]={cuenta:cuentas[i],importe:suma};  
+      }
+
+    
+     //Se declara arreglo vacio para rellenarlo en un bucle posterior
+     var listaCuenta=[];
+     var listaImporCuenta=[];
+     //se obtienen los primeros 5 elementos del arreglo ordenado por importe
+     for (let i = 0; i < cuentas.length; i++) {
+         listaCuenta.push(cuentas[i].cuenta);
+         listaImporCuenta.push(cuentas[i].importe);    
+     }
+    
+    
+     // Chart Global Color
+     Chart.defaults.color = "#6C7293";
+     Chart.defaults.borderColor = "#000000";
+     
+    
+        
+    // Doughnut Chart
+    var ctx6 = document.getElementById("analisis-cuentas").getContext("2d");
+    var myChart6 = new Chart(ctx6, {
+        type: "doughnut",
+        data: {
+            labels: listaCuenta,
+            datasets: [{
+                backgroundColor: [
+                    "rgba(235, 22, 22, .7)",
+                    "rgba(235, 22, 22, .6)",
+                    "rgba(235, 22, 22, .5)",
+                    "rgba(235, 22, 22, .4)"
+                ],
+                data: listaImporCuenta
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+
+
 
 
 

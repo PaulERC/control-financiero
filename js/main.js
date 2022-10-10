@@ -16,6 +16,7 @@
      //Se declara variable para obtener todos los registros
     var categorias=[];
     var meses=[];
+    var cuentas=[];
      var transaccionesRecientes="";
      var transacciones="";
      var contador=0;
@@ -33,6 +34,8 @@
             let mes=mov.c[1].f.split("/");
             //Se enlista cada mes
             meses.push(mes[1]);
+            //Se enlistan las cuentas
+            cuentas.push(mov.c[6].v);
          }
          if(contador<5){
             transaccionesRecientes+="<tr><td>"+mov.c[1].f+"</td><td>"+mov.c[2].v+"</td><td>"+mov.c[3].v+"</td><td>"+new Intl.NumberFormat('mx-MX', { style: 'currency', currency: 'MXN' }).format(mov.c[4].v)+"</td><td>"+mov.c[5].v+"</td><td>"+mov.c[6].v+"</td></tr>";
@@ -44,14 +47,17 @@
     categorias=new Set(categorias);
     var categorias = [...categorias];
     meses=new Set(meses);
-  var meses = [...meses];
-
-  //Chart Categorias
+    var meses = [...meses];
+    cuentas = new Set(cuentas);
+    var cuentas = [...cuentas]; 
+  
+  
+    //Chart Categorias
 
     //Se comienza un ciclo para iterar entre todos los elementos de la lista de categorias
   for (let i = 0; i < categorias.length; i++) {
     //Se declara variable local para almacenar y sumar importe    
-    var suma=0;
+    let suma=0;
     for(let mov of objetoJS.table.rows){
         if(mov.c[5].v=="Egreso"){
             //Se suma el importe cada vez que se cumple una condición
@@ -193,6 +199,65 @@ function convertirMes(numero){
 
 
 
+   //Chart Cuentas
+
+    //Se comienza un ciclo para iterar entre todos los elementos de la lista de cuentas
+    for (let i = 0; i < cuentas.length; i++) {
+        //Se declara variable local para almacenar y sumar importe    
+        let suma=0;
+        for(let mov of objetoJS.table.rows){
+            if(mov.c[5].v=="Egreso"){
+                //Se suma el importe cada vez que se cumple una condición
+                if(mov.c[6].v==cuentas[i]){
+                    suma+=mov.c[4].v;
+                    }
+                }
+        }
+        //Se reasigna el valor de una posición del arreglo, convirtiendo el arreglo de strings en un arreglo de objetos, agregandole el valor de la suma del importe
+        cuentas[i]={cuenta:cuentas[i],importe:suma};  
+      }
+
+    
+     //Se declara arreglo vacio para rellenarlo en un bucle posterior
+     var listaCuenta=[];
+     var listaImporCuenta=[];
+     //se obtienen los primeros 5 elementos del arreglo ordenado por importe
+     for (let i = 0; i < cuentas.length; i++) {
+         listaCuenta.push(cuentas[i].cuenta);
+         listaImporCuenta.push(cuentas[i].importe);    
+     }
+    
+    
+     // Chart Global Color
+     Chart.defaults.color = "#6C7293";
+     Chart.defaults.borderColor = "#000000";
+     
+    
+        
+    // Doughnut Chart
+    var ctx6 = document.getElementById("cuentas").getContext("2d");
+    var myChart6 = new Chart(ctx6, {
+        type: "doughnut",
+        data: {
+            labels: listaCuenta,
+            datasets: [{
+                backgroundColor: [
+                    "rgba(235, 22, 22, .7)",
+                    "rgba(235, 22, 22, .6)",
+                    "rgba(235, 22, 22, .5)",
+                    "rgba(235, 22, 22, .4)"
+                ],
+                data: listaImporCuenta
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+    
+
+
+
 
 //Se calcula el balance
 var balan=ingre-egre;
@@ -261,27 +326,31 @@ document.getElementById("movimientos-recientes").innerHTML=transaccionesReciente
 //   });
 
 
+
+
+
+
   // Single Bar Chart Categorias
- var ctx4 = document.getElementById("cuentas").getContext("2d");
- var myChart4 = new Chart(ctx4, {
-     type: "bar",
-     data: {
-         labels: ["Efectivo", "Débito", "Crédito", "Cristóbal Colón"],
-         datasets: [{
-            label: "Cuentas", 
-            backgroundColor: [
-                 "rgba(235, 22, 22, .7)",
-                 "rgba(235, 22, 22, .6)",
-                 "rgba(235, 22, 22, .5)",
-                 "rgba(235, 22, 22, .4)"
-             ],
-             data: [24, 44, 49, 55]
-         }]
-     },
-     options: {
-         responsive: true
-     }
- });
+//  var ctx4 = document.getElementById("cuentas").getContext("2d");
+//  var myChart4 = new Chart(ctx4, {
+//      type: "doughnut",
+//      data: {
+//          labels: ["Efectivo", "Débito", "Crédito", "Cristóbal Colón"],
+//          datasets: [{
+//             label: "Cuentas", 
+//             backgroundColor: [
+//                  "rgba(235, 22, 22, .7)",
+//                  "rgba(235, 22, 22, .6)",
+//                  "rgba(235, 22, 22, .5)",
+//                  "rgba(235, 22, 22, .4)"
+//              ],
+//              data: [24, 44, 49, 55]
+//          }]
+//      },
+//      options: {
+//          responsive: true
+//      }
+//  });
 
 
 
@@ -292,13 +361,13 @@ document.getElementById("movimientos-recientes").innerHTML=transaccionesReciente
         labels: ["Sep", "Oct", "Nov", "Dic", "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul","Ago"],
         datasets: [{
                  label: "Reales",
-                 data: [15, 30, 55, 45, 70, 65, 85],
+                 data: [15, 30, 55, 45, 70, 65, 85, 135, 170, 130, 150, 200],
                  backgroundColor: "rgba(235, 22, 22, .9)",
                  fill: true
              },
              {
                  label: "Proyectados",
-                 data: [99, 135, 170, 130, 190, 180, 270],
+                 data: [99, 135, 170, 130, 190, 180, 270, 135, 170, 230, 315, 330],
                  backgroundColor: "rgba(235, 22, 22, .4)",
                  fill: true
              }
