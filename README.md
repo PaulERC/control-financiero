@@ -1,4 +1,4 @@
-<h1 align="center"># Control Financiero</h1>
+<h1 align="center"> Dashboard Control Financiero Serverless</h1>
 
 ![Dashboard Finanzas](https://user-images.githubusercontent.com/89807520/194711911-a850a520-1cb6-41c7-aada-808472a64cd5.png)
 
