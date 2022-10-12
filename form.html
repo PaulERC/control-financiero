@@ -38,8 +38,8 @@
         <!-- Spinner End -->
 
 
-          <!-- Sidebar Start -->
-          <div class="sidebar pe-4 pb-3">
+        <!-- Sidebar Start -->
+        <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-secondary navbar-dark">
                 <a href="index.html" class="navbar-brand mx-4 mb-3">
                     <h3 class="text-primary"><i class="fa fa-wallet me-2"></i>Finanzas</h3>
@@ -51,14 +51,13 @@
                     </div>
                     <div class="ms-3">
                         <h6 class="mb-0">Paul Rmz</h6>
-                        <span>Admin</span>
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
                     <a href="index.html" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
-                    <a href="form.html" class="nav-item nav-link"><i class="fa fa-edit me-2"></i>Registrar</a>
+                    <a href="form.html" class="nav-item nav-link active"><i class="fa fa-edit me-2"></i>Registrar</a>
                     <a href="table.html" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Movimientos</a>
-                    <a href="chart.html" class="nav-item nav-link active"><i class="fa fa-chart-bar me-2"></i>Gráficas</a>
+                    <a href="chart.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Gráficas</a>
                 </div>
             </nav>
         </div>
@@ -76,8 +75,7 @@
                 <i class="fa fa-bars"></i>
             </a>
             <div class="navbar-nav align-items-center ms-auto">
-                
-                
+            
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                         <img class="rounded-circle me-lg-2" src="https://paulrmz.netlify.app/assets/img/paulbyn-min.png" alt="" style="width: 40px; height: 40px;">
@@ -94,32 +92,13 @@
         <!-- Navbar End -->
 
 
-            <!-- Chart Start -->
+            <!-- Blank Start -->
             <div class="container-fluid pt-4 px-4">
-                <div class="row g-4">
-                    <!--Pruebas-->
-                    <div class="col-sm-12 col-xl-10">
-                        <div class="bg-secondary rounded h-100 p-4">
-                            <h6 class="mb-4">Análisis por Categoría</h6>
-                            <canvas id="grafica-categoria"></canvas>
-                        </div>
-                    </div>
-                <!---->
-                    <div class="col-sm-12 col-xl-10" id="tiempo">
-                        <div class="bg-secondary rounded h-100 p-4">
-                            <h6 class="mb-4">Análisis por Tiempo</h6>
-                            <canvas id="analisis-tiempo"></canvas>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-xl-6" id="cuentas">
-                        <div class="bg-secondary rounded h-100 p-4">
-                            <h6 class="mb-4">Balance de Cuentas</h6>
-                            <canvas id="analisis-cuentas"></canvas>
-                        </div>
-                    </div>
-                </div>
+                <div class="row vh-100 bg-secondary rounded align-items-center justify-content-center mx-0">
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScaCbIY1r5LkRgEWdLRT85A0jSIX9ajDIjCgNVAuhKUb-ZUFQ/viewform?embedded=true" width="640" height="700" frameborder="0" marginheight="0" marginwidth="0">Cargando…</iframe>
+                </div> 
             </div>
-            <!-- Chart End -->
+            <!-- Blank End -->
 
 
             <!-- Footer Start -->
@@ -149,10 +128,9 @@
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Template Javascript -->
-    <script src="js/charts.js"></script>
+    <script src="js/main.js"></script>
 </body>
 
 </html>

@@ -1,10 +1,10 @@
 //Se obtienen los valores en formaro JSON
 $.ajax({
     //En el campo de URL debe de poner la url del documento de Google Speadsheets donde están sus datos, de la siguiente forma
-    //https://docs.google.com/spreadsheets/d/ID_DOCUMENT//gviz/tq?tqx=out:json&gid=ID_HOJA_TRABAJO
+    //https://docs.google.com/spreadsheets/d/ID_DOCUMENT/gviz/tq?tqx=out:json&gid=ID_HOJA_TRABAJO
     //ID_DOCUMENT es el identificador unico del documento de Google SpreadSheets
     //ID_HOJA_TRABAJO es el identificador de la hoja del documento en donde se encuentra la información que se va a importar en el JSON
-  url: 'https://docs.google.com/spreadsheets/d/ID_DOCUMENT//gviz/tq?tqx=out:json&gid=ID_HOJA_TRABAJO',
+  url: 'https://docs.google.com/spreadsheets/d/15S5FSUtPj_S8mW_m5HIJ7k1dcGn5qaj4Y3F6ErBWzGU/gviz/tq?tqx=out:json&gid=0',
   dataType: "text",
   contentType: "charset=utf-8",        
 }).done(prepararDatos);
